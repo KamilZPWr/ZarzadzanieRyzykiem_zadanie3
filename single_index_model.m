@@ -51,13 +51,16 @@ ylabel('Oczekiwana stopa zwrotu')
 for i = i
     beta_p = i*beta_brent + (1-i)*beta_ural;
     E_p = i*alfa_brent + (1-i)*alfa_ural + mean(R_index) * beta_p
-    Var_p = beta_p^2 * mean(R_index) + i*var_random_fractor_brent + (1-i)*var_random_fractor_ural
+    Var_p = beta_p^2 * mean(R_index) + i.^2*var_random_fractor_brent + (1-i).^2*var_random_fractor_ural
     plot(sqrt(Var_p), E_p, 'rx')
 end
 
+
 % 1c)
-weight_brent_min_risk = (var_ural - std_brent*std_ural*cov_brent_ural)/(var_brent + var_ural - 2*std_ural*std_brent*cov_brent_ural)
+%weight_brent_min_risk = (var_ural - std_brent*std_ural*cov_brent_ural)/(var_brent + var_ural - 2*std_ural*std_brent*cov_brent_ural)
+weight_brent_min_risk = (var(R_index)*beta_ural*(beta_ural-beta_brent)+var_random_fractor_ural)/(var(R_index)*(beta_brent-beta_ural).^2+var_random_fractor_brent+var_random_fractor_ural)
 weight_ural_min_risk = 1 - weight_brent_min_risk
+
 
 % 1d)
 
