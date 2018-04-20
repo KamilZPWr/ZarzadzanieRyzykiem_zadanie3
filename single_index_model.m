@@ -4,7 +4,7 @@ index_price = importdata('oil_index_month_average_from_01-04-08_to_01_02_18.txt'
 oil_data = importdata('oreln_oil_average_price_from_01-04-08_to_01-02-18.txt');
 brent_price = oil_data(:,1);
 ural_price = oil_data(:,2);
-
+%test
 R_brent =(brent_price(2:end)-brent_price(1:end-1))./brent_price(1:end-1)*100;
 R_ural = (ural_price(2:end)-ural_price(1:end-1))./ural_price(1:end-1)*100;
 
