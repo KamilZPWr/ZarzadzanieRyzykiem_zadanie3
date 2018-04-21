@@ -64,17 +64,29 @@ weight_ural_min_risk = 1 - weight_brent_min_risk
 
 % 1d)
 
+fixedrate = 0.05;
+weight_brent_fixedrate = (fixedrate-mean(R_ural))/(mean(R_brent)-mean(R_ural))
+weight_ural_fixedrate = 1-weight_brent_fixedrate
+
+figure
+w = -1:0.01:1;
+sigma_p_w = (w*beta_brent+(1-w)*beta_ural).^2*var(R_index)+w.^2*var_random_fractor_brent+(1-w).^2*var_random_fractor_ural;
+plot(w,sigma_p_w)
+
 % 1e)
-w_brent = 0:0.1:1;
+
+riskfree_rate = 0.03;
+
+w = 0:0.1:1;
 sharps_index = 0;
 market_portfolio_brent_weight = 0;
-for i = w_brent
+for i = w
     beta_p = i*beta_brent + (1-i)*beta_ural;
     E_p = i*alfa_brent + (1-i)*alfa_ural + mean(R_index) * beta_p;
     Var_p = beta_p^2 * mean(R_index) + i*var_random_fractor_brent + (1-i)*var_random_fractor_ural;
     
-    if (sharps_index < (E_p - mean(R_index))/sqrt(Var_p))
-        sharps_index = (E_p - mean(R_index))/sqrt(Var_p)
+    if (sharps_index < (E_p - riskfree_rate)/sqrt(Var_p))
+        sharps_index = (E_p - riskfree_rate)/sqrt(Var_p)
         market_portfolio_brent_weight = i;
         market_portfolio_ural_weight = 1-i;
     end
@@ -82,3 +94,5 @@ end
 sharps_index
 market_portfolio_brent_weight
 market_portfolio_ural_weight
+
+
