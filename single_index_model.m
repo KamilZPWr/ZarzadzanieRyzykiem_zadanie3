@@ -4,7 +4,7 @@ index_price = importdata('oil_index_month_average_from_01-04-08_to_01_02_18.txt'
 oil_data = importdata('oreln_oil_average_price_from_01-04-08_to_01-02-18.txt');
 brent_price = oil_data(:,1);
 ural_price = oil_data(:,2);
-%test
+
 R_brent =(brent_price(2:end)-brent_price(1:end-1))./brent_price(1:end-1)*100;
 R_ural = (ural_price(2:end)-ural_price(1:end-1))./ural_price(1:end-1)*100;
 
@@ -39,7 +39,7 @@ weight_ural = 0.14
 % 1a)
 beta_p0 = weight_brent*beta_brent + weight_ural*beta_ural;
 E_p_real = weight_brent*alfa_brent + weight_ural*alfa_ural + mean(R_index) * beta_p0
-Var_p_real = beta_p0^2 * mean(R_index) + weight_brent*var_random_fractor_brent + weight_ural*var_random_fractor_ural
+Var_p_real = beta_p0^2 * var(R_index) + weight_brent*var_random_fractor_brent + weight_ural*var_random_fractor_ural
 
 % 1b)
 i = 0:0.1:1
@@ -51,7 +51,7 @@ ylabel('Oczekiwana stopa zwrotu')
 for i = i
     beta_p = i*beta_brent + (1-i)*beta_ural;
     E_p = i*alfa_brent + (1-i)*alfa_ural + mean(R_index) * beta_p
-    Var_p = beta_p^2 * mean(R_index) + i.^2*var_random_fractor_brent + (1-i).^2*var_random_fractor_ural
+    Var_p = beta_p^2 * var(R_index) + i.^2*var_random_fractor_brent + (1-i).^2*var_random_fractor_ural
     plot(sqrt(Var_p), E_p, 'rx')
 end
 
@@ -71,7 +71,10 @@ weight_ural_fixedrate = 1-weight_brent_fixedrate
 figure
 w = -1:0.01:1;
 sigma_p_w = (w*beta_brent+(1-w)*beta_ural).^2*var(R_index)+w.^2*var_random_fractor_brent+(1-w).^2*var_random_fractor_ural;
+sigma_p_wbmr = (weight_brent_min_risk*beta_brent+(1-weight_brent_min_risk)*beta_ural).^2*var(R_index)+weight_brent_min_risk.^2*var_random_fractor_brent+(1-weight_brent_min_risk).^2*var_random_fractor_ural
 plot(w,sigma_p_w)
+hold on
+plot(weight_brent_min_risk, sigma_p_wbmr,'.')
 
 % 1e)
 
@@ -83,7 +86,7 @@ market_portfolio_brent_weight = 0;
 for i = w
     beta_p = i*beta_brent + (1-i)*beta_ural;
     E_p = i*alfa_brent + (1-i)*alfa_ural + mean(R_index) * beta_p;
-    Var_p = beta_p^2 * mean(R_index) + i*var_random_fractor_brent + (1-i)*var_random_fractor_ural;
+    Var_p = beta_p^2 * var(R_index) + i.^2*var_random_fractor_brent + (1-i).^2*var_random_fractor_ural;
     
     if (sharps_index < (E_p - riskfree_rate)/sqrt(Var_p))
         sharps_index = (E_p - riskfree_rate)/sqrt(Var_p)
