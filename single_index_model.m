@@ -78,7 +78,7 @@ plot(weight_brent_min_risk, sigma_p_wbmr,'.')
 
 % 1e)
 
-riskfree_rate = 0.03;
+riskfree_rate = 0.02;
 
 w = 0:0.1:1;
 sharps_index = 0;
@@ -98,4 +98,10 @@ sharps_index
 market_portfolio_brent_weight
 market_portfolio_ural_weight
 
-
+w = 0:0.1:1;
+beta_p = w*beta_brent + (1-w)*beta_ural;
+E_p = w*alfa_brent + (1-w)*alfa_ural + mean(R_index) * beta_p;
+Var_p = beta_p.^2 * var(R_index) + w.^2*var_random_fractor_brent + (1-w).^2*var_random_fractor_ural;
+sharpe_index = (E_p - riskfree_rate)./sqrt(Var_p);
+figure 
+plot(w,sharpe_index)
